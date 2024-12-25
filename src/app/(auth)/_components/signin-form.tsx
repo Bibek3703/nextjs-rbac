@@ -46,6 +46,7 @@ export function SignInForm({
                                         type="email"
                                         placeholder="m@example.com"
                                         required
+                                        readOnly
                                     />
                                 </div>
                                 <div className="grid gap-2">
@@ -64,9 +65,14 @@ export function SignInForm({
                                         id="password"
                                         type="password"
                                         required
+                                        readOnly
                                     />
                                 </div>
-                                <Button type="submit" className="w-full">
+                                <Button
+                                    type="submit"
+                                    className="w-full"
+                                    disabled
+                                >
                                     Login
                                 </Button>
                             </div>
