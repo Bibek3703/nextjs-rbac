@@ -1,0 +1,1 @@
+export const appOAuthProviders = ["google", "apple"] as const
