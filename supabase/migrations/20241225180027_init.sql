@@ -137,9 +137,11 @@ as $$
         new.id,
         COALESCE(new.raw_user_meta_data->>'username', new.raw_user_meta_data->>'email'),
         new.raw_user_meta_data->>'full_name',
-        new.raw_user_meta_data->>'avatar_url',
+        new.raw_user_meta_data->>'avatar_url'
     );
+
     insert into public.user_roles (user_id, role) values (new.id, 'ADMIN');
+
     return new;
   end;
 $$ language plpgsql security definer;
