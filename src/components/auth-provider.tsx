@@ -1,9 +1,14 @@
 "use client";
 
 import { createClient } from "@/utils/supabase/client";
-import { AuthChangeEvent, Session, Subscription } from "@supabase/supabase-js";
+import {
+    AuthChangeEvent,
+    Session,
+    Subscription,
+    User,
+} from "@supabase/supabase-js";
 import { usePathname, useRouter } from "next/navigation";
-import { jwtDecode } from "jwt-decode";
+import { jwtDecode, JwtPayload } from "jwt-decode";
 import {
     createContext,
     ReactNode,
@@ -23,7 +28,7 @@ const AuthContext = createContext<AuthContext>({
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [userLoaded, setUserLoaded] = useState(false);
     const [session, setSession] = useState<Session | null>(null);
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState<User & { appRole: string } | null>(null);
     const router = useRouter();
     const pathname = usePathname();
 
@@ -31,15 +36,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         event: AuthChangeEvent,
         session: Session | null,
     ) => {
-        setSession(session);
-        let currentUser = session?.user;
+        let currentUser = session?.user as User & { appRole: string };
         if (session && currentUser) {
-            const jwt = jwtDecode(session.access_token);
-            console.log({ jwt, currentUser });
-            // currentUser.appRole = jwt.user_role;
+            const jwt = jwtDecode(session.access_token) as JwtPayload & {
+                user_role: string;
+            };
+            if (jwt?.user_role) {
+                currentUser.appRole = jwt.user_role;
+            }
         }
-        // setUser(currentUser ?? null);
-        // setUserLoaded(!!currentUser);
+        setUser(currentUser ?? null);
+        setUserLoaded(!!currentUser);
+        setSession(session);
         if (event === "INITIAL_SESSION") {
             // handle initial session
         } else if (event === "SIGNED_IN") {
