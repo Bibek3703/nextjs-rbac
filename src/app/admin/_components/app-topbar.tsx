@@ -68,12 +68,18 @@ export default function AppTopBar() {
                                                     .href}
                                                 className="capitalize"
                                             >
-                                                {breadcrumb.label}
+                                                {breadcrumb.label.replace(
+                                                    "admin",
+                                                    "dashboard",
+                                                )}
                                             </BreadcrumbLink>
                                         )
                                         : (
                                             <BreadcrumbPage className="capitalize">
-                                                {breadcrumb.label}
+                                                {breadcrumb.label.replace(
+                                                    "admin",
+                                                    "dashboard",
+                                                )}
                                             </BreadcrumbPage>
                                         )}
                                 </BreadcrumbItem>

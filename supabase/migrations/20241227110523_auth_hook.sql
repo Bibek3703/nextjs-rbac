@@ -1,4 +1,5 @@
 -- Create the auth hook function
+-- https://supabase.com/docs/guides/auth/auth-hooks#hook-custom-access-token
 create or replace function public.custom_access_token_hook(event jsonb)
 returns jsonb
 language plpgsql
@@ -8,7 +9,7 @@ as $$
     claims jsonb;
     user_role public.app_role;
   begin
-    -- Fetch the user role in the user_roles table
+    -- Check if the user is marked as admin in the profiles table
     select role into user_role from public.user_roles where user_id = (event->>'user_id')::uuid;
 
     claims := event->'claims';
@@ -16,7 +17,7 @@ as $$
     if user_role is not null then
       -- Set the claim
       claims := jsonb_set(claims, '{user_role}', to_jsonb(user_role));
-    else
+    else 
       claims := jsonb_set(claims, '{user_role}', 'null');
     end if;
 
@@ -36,7 +37,7 @@ grant execute
 
 revoke execute
   on function public.custom_access_token_hook
-  from authenticated, anon, public;
+  from authenticated, anon;
 
 grant all
   on table public.user_roles
@@ -44,7 +45,7 @@ to supabase_auth_admin;
 
 revoke all
   on table public.user_roles
-  from authenticated, anon, public;
+  from authenticated, anon;
 
 create policy "Allow auth admin to read user roles" ON public.user_roles
 as permissive for select
