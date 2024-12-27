@@ -25,7 +25,8 @@ export async function signinWithOAuth(
     const {
         provider,
         options: {
-            redirectTo = `${process.env.APP_URL!}/auth/callback`,
+            redirectTo = `${process.env
+                .NEXT_SITE_URL!}/auth/callback?next=/admin`,
             ...rest
         } = {},
     } = credientials;
