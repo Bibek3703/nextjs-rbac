@@ -28,6 +28,7 @@ import { PAGE_INDEX, PAGE_SIZE } from "@/constants";
 import { Filters } from "@/types";
 import useDebounce from "@/hooks/use-debounce";
 import PageSizeSelect from "./page-size-select";
+import SearchBySelect from "./searchby-select";
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
@@ -56,8 +57,6 @@ export function DataTable<TData, TValue>({
     // );
     const debouncedValue = useDebounce(inputValue, 300);
 
-    // console.log({ columnFilters, sorting });
-
     const paginationState = {
         pageIndex: filters?.pageIndex || PAGE_INDEX,
         pageSize: filters?.pageSize || PAGE_SIZE,
@@ -73,9 +72,6 @@ export function DataTable<TData, TValue>({
         getSortedRowModel: getSortedRowModel(),
         // onColumnFiltersChange: setColumnFilters,
         getFilteredRowModel: getFilteredRowModel(),
-        onRowSelectionChange: (props) => {
-            console.log({props})
-        },
         manualFiltering: true,
         manualSorting: false,
         manualPagination: true,
@@ -87,9 +83,6 @@ export function DataTable<TData, TValue>({
             rowSelection,
             // sorting,
             // columnFilters,
-        },
-        onStateChange: (state) => {
-            console.log({ state: table.getState() });
         },
         onPaginationChange: (pagination: any) => {
             setFilters(
@@ -104,9 +97,7 @@ export function DataTable<TData, TValue>({
     });
 
     useEffect(() => {
-        if (debouncedValue) {
-            setFilters({ ...filters, query: debouncedValue } as Filters<TData>);
-        }
+        setFilters({ ...filters, query: debouncedValue } as Filters<TData>);
     }, [debouncedValue]);
 
     return (
@@ -116,12 +107,15 @@ export function DataTable<TData, TValue>({
                 {description && <p className="text-sm text-foreground/50">{description}</p>}
             </div>
             <div className="flex items-center justify-between mb-4">
-                <Input
-                    placeholder="Filter title..."
-                    value={inputValue}
-                    onChange={(event) => setInputValue(event.target.value)}
-                    className="max-w-sm"
-                />
+                <div className="flex items-center gap-3">
+                    <Input
+                        placeholder="Filter title..."
+                        value={inputValue}
+                        onChange={(event) => setInputValue(event.target.value)}
+                        className="max-w-sm"
+                    />
+                    <SearchBySelect />
+                </div>
                 <PageSizeSelect 
                     value={filters?.pageSize?.toString() || PAGE_SIZE.toString()} 
                     onChange={(value) => {

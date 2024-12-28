@@ -18,6 +18,7 @@ export default function useTodos() {
     const [filters, setFilters] = useState<Filters<Todo>>({
         pageIndex: 0,
         pageSize: 5,
+        columns: "title"
     });
 
     // Query function to fetch todos

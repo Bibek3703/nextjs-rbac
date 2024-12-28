@@ -12,7 +12,6 @@ export default function TodosTable() {
     if(isLoading){
         return <TablePlacehoder />
     }
-    
 
     return (
         <div>

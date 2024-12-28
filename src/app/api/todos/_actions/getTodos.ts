@@ -20,8 +20,16 @@ export default async function getTodos(filters?: Filters<Todo>) {
 
     let queryBuilder = supabase
         .from("todos")
-        .select(`*, author:created_by(*)`, { count: "estimated" })
-        .range(offset, offset + pageSize - 1);
+        .select(`*, author:created_by(*)`, { count: "estimated" });
+
+    // Apply search if query and columns are provided
+    if (query && columns) {
+        const searchColumns = columns?.replaceAll(",", "_");
+        console.log({searchColumns, query})
+        if (searchColumns) {
+            queryBuilder = queryBuilder.textSearch(searchColumns, query.toLowerCase());
+        }
+    }  
 
     // Apply sorting if specified
     if (sortBy) {
@@ -31,15 +39,7 @@ export default async function getTodos(filters?: Filters<Todo>) {
         });
     }
 
-    console.log({ query });
-
-    // Apply search if query and columns are provided
-    if (query && columns) {
-        const searchColumns = columns.replaceAll(",", "_");
-        if (searchColumns) {
-            queryBuilder = queryBuilder.textSearch(searchColumns, query);
-        }
-    }
+    queryBuilder = queryBuilder.range(offset, offset + pageSize - 1);
 
     const result = await queryBuilder;
 

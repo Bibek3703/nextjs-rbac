@@ -5,7 +5,7 @@ export function createSearchParams<T>(params: Filters<T>): URLSearchParams {
 
     Object.entries(params).forEach(([key, value]) => {
         if (value !== undefined && value !== null) {
-            if (Array.isArray(value)) {
+            if (Array.isArray(value) && key !== "columns") {
                 value.forEach((item) =>
                     searchParams.append(key, item.toString())
                 );
