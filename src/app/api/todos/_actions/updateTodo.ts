@@ -15,7 +15,5 @@ export default async function updateTodo(id: string, todoData: PartialTodo) {
         .select(`*, author:created_by(*)`)
         .single();
 
-    console.log({ result });
-
     return result;
 }

@@ -40,11 +40,13 @@ export async function PATCH(
             body,
         );
 
+        console.log({ data, status, statusText, error });
+
         if (error && status === 406 && statusText === "Not Acceptable") {
             return NextResponse.json({
                 error: "Not authorized to update todos",
             }, {
-                status: 404,
+                status: 403,
                 statusText,
             });
         }
@@ -53,7 +55,7 @@ export async function PATCH(
             return NextResponse.json({ error }, { status, statusText });
         }
 
-        return NextResponse.json(data, { status, statusText });
+        return NextResponse.json({ data }, { status, statusText });
     } catch (error: unknown) {
         // Handle unknown errors
         return NextResponse.json(

@@ -20,13 +20,7 @@ import { toast } from "sonner";
 export default function TodoVisibility(
     { id, visibility }: { id: string; visibility: Visibility },
 ) {
-    const { updateTodo, updateError } = useTodos();
-
-    useEffect(() => {
-        if (updateError) {
-            toast.error(updateError.message);
-        }
-    }, [updateError]);
+    const { updateTodo } = useTodos();
 
     const handleOnClick = () => {
         updateTodo(id, {

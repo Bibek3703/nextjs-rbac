@@ -10,6 +10,7 @@ import {
     useQueryClient,
 } from "@tanstack/react-query";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export default function useTodos() {
     const queryClient = useQueryClient();
@@ -19,6 +20,7 @@ export default function useTodos() {
         pageSize: 5,
     });
 
+    // Query function to fetch todos
     const todosFetchFn = async (filters: Filters<Todo>) => {
         const searchQueries = createSearchParams(filters);
         const response = await fetch(`/api/todos?${searchQueries}`, {
@@ -27,10 +29,11 @@ export default function useTodos() {
                 "Content-Type": "application/json",
             },
         });
+        const responseData = await response.json();
         if (!response.ok) {
-            throw new Error("Failed to delete the todo");
+            throw new Error(responseData?.error || "Failed to fetch todos");
         }
-        return response.json();
+        return responseData;
     };
 
     const { data, isFetching, isLoading, error } = useQuery({
@@ -39,6 +42,7 @@ export default function useTodos() {
         placeholderData: keepPreviousData,
     });
 
+    // Mutation function to delete todo
     const todoDeleteFn = async (id: string) => {
         const response = await fetch(`/api/todos/${id}`, {
             method: "DELETE",
@@ -47,21 +51,27 @@ export default function useTodos() {
             },
             body: JSON.stringify(data),
         });
+        const responseData = await response.json();
         if (!response.ok) {
-            throw new Error("Failed to delete the todo");
+            throw new Error(responseData?.error || "Failed to delete todo");
         }
-        return response.json();
+        return responseData;
     };
 
     const deleteMutation = useMutation({
         mutationFn: todoDeleteFn,
         onSuccess: () => {
+            toast.success("Todo deleted successfully");
             queryClient.invalidateQueries({
                 queryKey: ["todos", filters],
             });
         },
+        onError: (error) => {
+            toast.error(error?.message || "Failed to delete todo");
+        },
     });
 
+    // Mutation function to update todo
     const todoUpdateFn = async (
         { id, data }: { id: string; data: PartialTodo },
     ) => {
@@ -76,15 +86,19 @@ export default function useTodos() {
         if (!response.ok) {
             throw new Error(responseData?.error || "Failed to update todo");
         }
-        return response.json();
+        return responseData;
     };
 
     const updateMutation = useMutation({
         mutationFn: todoUpdateFn,
         onSuccess: () => {
+            toast.success("Todo updated successfully");
             queryClient.invalidateQueries({
                 queryKey: ["todos", filters],
             });
+        },
+        onError: (error) => {
+            toast.error(error?.message || "Failed to update todo");
         },
     });
 
