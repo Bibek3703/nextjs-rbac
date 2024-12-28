@@ -36,7 +36,7 @@ export default function useTodos() {
         return responseData;
     };
 
-    const { data, isFetching, isLoading, error } = useQuery({
+    const { data, isLoading, error } = useQuery({
         queryKey: ["todos", { ...filters }],
         queryFn: () => todosFetchFn(filters),
         placeholderData: keepPreviousData,
@@ -116,7 +116,7 @@ export default function useTodos() {
         setFilters,
         deleteTodo,
         updateTodo,
-        isLoading: isFetching || isLoading,
+        isLoading,
         filters,
         fetchError: error,
         deleteError: deleteMutation.error,

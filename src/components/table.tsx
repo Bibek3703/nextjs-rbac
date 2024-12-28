@@ -27,6 +27,7 @@ import TablePagination from "./table-pagination";
 import { PAGE_INDEX, PAGE_SIZE } from "@/constants";
 import { Filters } from "@/types";
 import useDebounce from "@/hooks/use-debounce";
+import PageSizeSelect from "./page-size-select";
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
@@ -34,6 +35,8 @@ interface DataTableProps<TData, TValue> {
     filters?: Filters<TData>;
     setFilters: (filters: Filters<TData>) => void;
     rowCount?: number;
+    title: string;
+    description?: string;
 }
 
 export function DataTable<TData, TValue>({
@@ -42,15 +45,18 @@ export function DataTable<TData, TValue>({
     filters,
     setFilters,
     rowCount = 0,
+    title,
+    description = ""
 }: DataTableProps<TData, TValue>) {
-    const [sorting, setSorting] = useState<SortingState>([]);
+    // const [sorting, setSorting] = useState<SortingState>([]);
     const [inputValue, setInputValue] = useState("");
-    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(
-        [],
-    );
+    const [rowSelection, setRowSelection] = useState({})
+    // const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(
+    //     [],
+    // );
     const debouncedValue = useDebounce(inputValue, 300);
 
-    // console.log({ columnFilters });
+    // console.log({ columnFilters, sorting });
 
     const paginationState = {
         pageIndex: filters?.pageIndex || PAGE_INDEX,
@@ -63,20 +69,27 @@ export function DataTable<TData, TValue>({
         columns,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
-        onSortingChange: setSorting,
+        // onSortingChange: setSorting,
         getSortedRowModel: getSortedRowModel(),
-        onColumnFiltersChange: setColumnFilters,
+        // onColumnFiltersChange: setColumnFilters,
         getFilteredRowModel: getFilteredRowModel(),
+        onRowSelectionChange: (props) => {
+            console.log({props})
+        },
         manualFiltering: true,
-        manualSorting: true,
+        manualSorting: false,
         manualPagination: true,
         state: {
             pagination: {
                 pageIndex: filters?.pageIndex || PAGE_INDEX,
                 pageSize: filters?.pageSize || PAGE_SIZE,
             },
-            sorting,
-            columnFilters,
+            rowSelection,
+            // sorting,
+            // columnFilters,
+        },
+        onStateChange: (state) => {
+            console.log({ state: table.getState() });
         },
         onPaginationChange: (pagination: any) => {
             setFilters(
@@ -98,12 +111,25 @@ export function DataTable<TData, TValue>({
 
     return (
         <div className="rounded-md border p-4">
-            <div className="flex items-center mb-4">
+            <div className="mb-4">
+                <h1 className="text-lg font-semibold">{title || "Table heading"}</h1>
+                {description && <p className="text-sm text-foreground/50">{description}</p>}
+            </div>
+            <div className="flex items-center justify-between mb-4">
                 <Input
                     placeholder="Filter title..."
                     value={inputValue}
                     onChange={(event) => setInputValue(event.target.value)}
                     className="max-w-sm"
+                />
+                <PageSizeSelect 
+                    value={filters?.pageSize?.toString() || PAGE_SIZE.toString()} 
+                    onChange={(value) => {
+                        setFilters({
+                            ...filters,
+                            pageSize: Number(value)
+                        } as Filters<TData>)
+                    }}
                 />
             </div>
             <Table>
