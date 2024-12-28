@@ -1,20 +1,27 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { Todo } from "@/types/todo";
-import { Eye, EyeClosed, EyeOff, MoreHorizontal } from "lucide-react";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Todo, Visibility } from "@/types/todo";
+import { ArrowUpDown } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
+import ActionsMenu from "./actions-menu";
+import TodoVisibility from "./todo-visibility";
 
 export const columns: ColumnDef<Todo>[] = [
     {
         accessorKey: "title",
-        header: "Title",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    className="p-0 hover:bg-transparent"
+                    onClick={() =>
+                        column.toggleSorting(column.getIsSorted() === "asc")}
+                >
+                    Title
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            );
+        },
     },
     {
         accessorKey: "description",
@@ -52,12 +59,11 @@ export const columns: ColumnDef<Todo>[] = [
             </div>
         ),
         cell: ({ row }) => {
-            const visibility = row.getValue("visibility");
+            const visibility: Visibility = row.getValue("visibility");
+            const data: Todo = row.original;
             return (
                 <div className="text-xs flex justify-center">
-                    {visibility === "private"
-                        ? <EyeOff className="w-4" />
-                        : <Eye className="w-4" />}
+                    <TodoVisibility id={data.id} visibility={visibility} />
                 </div>
             );
         },
@@ -65,32 +71,8 @@ export const columns: ColumnDef<Todo>[] = [
     {
         id: "actions",
         cell: ({ row }) => {
-            const payment = row.original;
-
-            return (
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 p-0">
-                            <span className="sr-only">Open menu</span>
-                            <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem
-                            onClick={() =>
-                                navigator.clipboard.writeText(payment.id)}
-                        >
-                            Copy payment ID
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem>View customer</DropdownMenuItem>
-                        <DropdownMenuItem>
-                            View payment details
-                        </DropdownMenuItem>
-                    </DropdownMenuContent>
-                </DropdownMenu>
-            );
+            const data = row.original;
+            return <ActionsMenu data={data} />;
         },
     },
 ];

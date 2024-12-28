@@ -1,28 +1,22 @@
 "use client";
 
-import getTodos from "@/app/api/todos/_actions/getTodos";
 import { DataTable } from "@/components/table";
-import { Todo } from "@/types/todo";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { columns } from "./columns";
+import useTodos from "@/hooks/use-todos";
 
 export default function TodosTable() {
-    const [todos, setTodos] = useState<Todo[]>([]);
-
-    const fetchTodos = async () => {
-        const response = await getTodos();
-        if (response.data) {
-            setTodos(response.data);
-        }
-    };
-
-    useEffect(() => {
-        fetchTodos();
-    }, []);
+    const { todos, filters, setFilters, totalRow } = useTodos();
 
     return (
         <div>
-            <DataTable data={todos} columns={columns} />
+            <DataTable
+                data={todos}
+                columns={columns}
+                filters={filters}
+                setFilters={setFilters}
+                rowCount={totalRow}
+            />
         </div>
     );
 }
