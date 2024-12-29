@@ -1,7 +1,7 @@
 "use client";
 
 import { Filters } from "@/types";
-import { PartialTodo, Todo } from "@/types/todo";
+import { PartialTodo, Todo, todoFormValues } from "@/types/todo";
 import { createSearchParams } from "@/utils/api";
 import {
     keepPreviousData,
@@ -110,6 +110,42 @@ export default function useTodos() {
         },
     });
 
+    // Mutation function to update todo
+    const todoAddFn = async (
+        formData: todoFormValues,
+    ) => {
+        console.log({ formData });
+        const response = await fetch(`/api/todos`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData),
+        });
+        const responseData = await response.json();
+        if (!response.ok) {
+            throw new Error(responseData?.error || "Failed to update todo");
+        }
+        return responseData;
+    };
+
+    const addMutation = useMutation({
+        mutationFn: todoAddFn,
+        onSuccess: () => {
+            toast.success("Todo added successfully");
+            queryClient.invalidateQueries({
+                queryKey: ["todos", filters],
+            });
+        },
+        onError: (error) => {
+            toast.error(error?.message || "Failed to add todo");
+        },
+    });
+
+    const addTodo = (formData: todoFormValues) => {
+        addMutation.mutate(formData);
+    };
+
     const deleteTodo = (id: string) => {
         deleteMutation.mutate(id);
     };
@@ -122,6 +158,7 @@ export default function useTodos() {
         todos: data?.todos ?? [],
         totalRow: data?.totalRow ?? 0,
         setFilters,
+        addTodo,
         deleteTodo,
         updateTodo,
         isLoading,

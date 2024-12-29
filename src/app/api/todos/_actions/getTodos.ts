@@ -20,7 +20,8 @@ export default async function getTodos(filters?: Filters<Todo>) {
 
     let queryBuilder = supabase
         .from("todos")
-        .select(`*, author:created_by(*)`, { count: "estimated" });
+        .select(`*, author:created_by(*)`, { count: "estimated" })
+        .order("created_at", { ascending: false });
 
     // Apply search if query and columns are provided
     if (query && columns) {
