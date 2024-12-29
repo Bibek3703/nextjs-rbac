@@ -59,7 +59,7 @@ export function NavUser({
                             size="lg"
                             className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                         >
-                            <Avatar className="h-8 w-8 rounded-lg">
+                            <Avatar className="relative h-8 w-8 rounded-lg">
                                 <AvatarImage
                                     src={user.avatar}
                                     alt={user.name}
@@ -106,15 +106,18 @@ export function NavUser({
                                 </div>
                             </div>
                         </DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuGroup>
+                        {/* <DropdownMenuSeparator /> */}
+                        {
+                            /* <DropdownMenuGroup>
                             <DropdownMenuItem>
                                 <Sparkles />
                                 Upgrade to Pro
                             </DropdownMenuItem>
-                        </DropdownMenuGroup>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuGroup>
+                        </DropdownMenuGroup> */
+                        }
+                        {/* <DropdownMenuSeparator /> */}
+                        {
+                            /* <DropdownMenuGroup>
                             <DropdownMenuItem>
                                 <BadgeCheck />
                                 Account
@@ -127,10 +130,12 @@ export function NavUser({
                                 <Bell />
                                 Notifications
                             </DropdownMenuItem>
-                        </DropdownMenuGroup>
+                        </DropdownMenuGroup> */
+                        }
                         <DropdownMenuSeparator />
                         <DropdownMenuItem
                             onClick={handleSignOut}
+                            className="cursor-pointer"
                         >
                             <LogOut />
                             Log out

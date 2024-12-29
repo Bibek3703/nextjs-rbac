@@ -19,10 +19,12 @@ import {
 
 interface AuthContext {
     session: Session | null;
+    user: User & { appRole: string } | null;
 }
 
 const AuthContext = createContext<AuthContext>({
     session: null,
+    user: null,
 });
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
@@ -91,7 +93,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }, []);
 
     return (
-        <AuthContext.Provider value={{ session }}>
+        <AuthContext.Provider value={{ session, user }}>
             {children}
         </AuthContext.Provider>
     );

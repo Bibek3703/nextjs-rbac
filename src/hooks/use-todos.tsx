@@ -114,7 +114,6 @@ export default function useTodos() {
     const todoAddFn = async (
         formData: todoFormValues,
     ) => {
-        console.log({ formData });
         const response = await fetch(`/api/todos`, {
             method: "POST",
             headers: {

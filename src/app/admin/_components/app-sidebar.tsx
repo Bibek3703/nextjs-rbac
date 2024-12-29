@@ -20,16 +20,12 @@ import {
     SidebarRail,
 } from "@/components/ui/sidebar";
 import { TeamSwitcher } from "./team-switcher";
-import { NavMain } from "./nav-main";
+import { NavItem, NavMain } from "./nav-main";
 import { NavUser } from "./nav-user";
+import { useAuth } from "@/components/auth-provider";
 
 // This is sample data.
 const data = {
-    user: {
-        name: "shadcn",
-        email: "m@example.com",
-        avatar: "/avatars/shadcn.jpg",
-    },
     teams: [
         {
             name: "Acme Inc",
@@ -52,16 +48,19 @@ const data = {
             title: "Dashboard",
             url: "/admin",
             icon: Home,
+            roles: ["admin"],
         },
         {
             title: "Todos",
             url: "/admin/todos",
             icon: Notebook,
+            roles: ["admin", "moderator"],
         },
         {
             title: "Users",
             url: "/admin/users",
             icon: Users,
+            roles: ["admin"],
         },
         {
             title: "Settings",
@@ -107,17 +106,28 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+    const { user } = useAuth();
+
+    if (!user) return null;
+
     return (
         <Sidebar collapsible="icon" {...props}>
             <SidebarHeader>
                 <TeamSwitcher teams={data.teams} />
             </SidebarHeader>
             <SidebarContent>
-                <NavMain items={data.navMain} />
+                <NavMain items={data.navMain as NavItem[]} />
                 {/* <NavTodos projects={data.projects} /> */}
             </SidebarContent>
             <SidebarFooter>
-                <NavUser user={data.user} />
+                <NavUser
+                    user={{
+                        email: user?.email || "user@example.com",
+                        name: user?.user_metadata?.name || "User name",
+                        avatar: user?.user_metadata?.avatar_url ||
+                            "/avatars/avatar.svg",
+                    }}
+                />
             </SidebarFooter>
             <SidebarRail />
         </Sidebar>

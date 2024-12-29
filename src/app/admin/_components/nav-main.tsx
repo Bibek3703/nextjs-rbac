@@ -17,26 +17,36 @@ import {
     SidebarMenuSubButton,
     SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
+import { useAuth } from "@/components/auth-provider";
+
+export type NavItem = {
+    title: string;
+    url: string;
+    icon?: LucideIcon;
+    isActive?: boolean;
+    items?: {
+        title: string;
+        url: string;
+    }[];
+    roles: string[];
+};
 
 export function NavMain({
     items,
 }: {
-    items: {
-        title: string;
-        url: string;
-        icon?: LucideIcon;
-        isActive?: boolean;
-        items?: {
-            title: string;
-            url: string;
-        }[];
-    }[];
+    items: NavItem[];
 }) {
+    const { user } = useAuth();
+
+    if (!user) return null;
+
     return (
         <SidebarGroup>
             <SidebarMenu>
-                {items.map((item) =>
-                    item?.items && item?.items?.length > 0
+                {items.map((item: NavItem) =>
+                    !item?.roles?.includes(user?.appRole as string)
+                        ? null
+                        : item?.items && item?.items?.length > 0
                         ? (
                             <Collapsible
                                 key={item.title}

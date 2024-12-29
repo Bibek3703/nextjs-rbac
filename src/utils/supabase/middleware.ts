@@ -1,4 +1,5 @@
 import { createServerClient } from "@supabase/ssr";
+import { jwtDecode, JwtPayload } from "jwt-decode";
 import { type NextRequest, NextResponse } from "next/server";
 
 export async function updateSession(request: NextRequest) {
@@ -39,6 +40,25 @@ export async function updateSession(request: NextRequest) {
         data: { user },
     } = await supabase.auth.getUser();
 
+    const {
+        data: { session },
+    } = await supabase.auth.getSession();
+
+    console.log({ session });
+
+    let role = "";
+
+    if (session?.access_token) {
+        const jwt = jwtDecode(session.access_token) as JwtPayload & {
+            user_role: string;
+        };
+        if (jwt?.user_role) {
+            role = jwt.user_role;
+        }
+    }
+
+    console.log({ role });
+
     if (
         !user &&
         request.nextUrl.pathname.startsWith("/admin")
@@ -55,7 +75,13 @@ export async function updateSession(request: NextRequest) {
     ) {
         // no user, potentially respond by redirecting the user to the login page
         const url = request.nextUrl.clone();
-        url.pathname = "/admin";
+        url.pathname = role === "/admin" ? "/admin" : "/todos";
+        return NextResponse.redirect(url);
+    }
+
+    if (role === "moderator" && request.nextUrl.pathname === "/admin") {
+        const url = request.nextUrl.clone();
+        url.pathname = "/admin/todos";
         return NextResponse.redirect(url);
     }
 
