@@ -14,16 +14,19 @@ import { toast } from "sonner";
 
 export default function useTodos() {
     const queryClient = useQueryClient();
+    const [searchColumns, setSearchColumns] = useState(["title"]);
 
     const [filters, setFilters] = useState<Filters<Todo>>({
         pageIndex: 0,
         pageSize: 5,
-        columns: "title"
     });
 
     // Query function to fetch todos
     const todosFetchFn = async (filters: Filters<Todo>) => {
-        const searchQueries = createSearchParams(filters);
+        const searchQueries = createSearchParams({
+            ...filters,
+            columns: searchColumns.join(","),
+        });
         const response = await fetch(`/api/todos?${searchQueries}`, {
             method: "GET",
             headers: {
@@ -31,9 +34,11 @@ export default function useTodos() {
             },
         });
         const responseData = await response.json();
+
         if (!response.ok) {
             throw new Error(responseData?.error || "Failed to fetch todos");
         }
+
         return responseData;
     };
 
@@ -53,9 +58,11 @@ export default function useTodos() {
             body: JSON.stringify(data),
         });
         const responseData = await response.json();
+
         if (!response.ok) {
             throw new Error(responseData?.error || "Failed to delete todo");
         }
+
         return responseData;
     };
 

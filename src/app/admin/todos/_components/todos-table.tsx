@@ -5,6 +5,7 @@ import React from "react";
 import { columns } from "./columns";
 import useTodos from "@/hooks/use-todos";
 import TablePlacehoder from "@/components/table-placeholder";
+import TodoHeaderActions from "./header-actions";
 
 export default function TodosTable() {
     const { todos, filters, setFilters, totalRow, isLoading } = useTodos();
@@ -23,6 +24,7 @@ export default function TodosTable() {
                 rowCount={totalRow}
                 title="Todos"
                 description="List of todos this month"
+                headerActions={<TodoHeaderActions/>}
             />
         </div>
     );

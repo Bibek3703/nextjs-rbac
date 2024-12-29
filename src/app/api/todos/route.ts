@@ -12,6 +12,8 @@ export async function GET(request: NextRequest) {
             new URLSearchParams(searchParams),
         );
 
+        console.log({ filters });
+
         const { data, count, error, status, statusText } = await getTodos(
             filters,
         );

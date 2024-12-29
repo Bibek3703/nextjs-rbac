@@ -16,7 +16,7 @@ export default async function getTodos(filters?: Filters<Todo>) {
         columns,
     } = filters || {};
 
-    const offset = pageIndex * pageSize;
+    let offset = pageIndex * pageSize;
 
     let queryBuilder = supabase
         .from("todos")
@@ -25,23 +25,28 @@ export default async function getTodos(filters?: Filters<Todo>) {
     // Apply search if query and columns are provided
     if (query && columns) {
         const searchColumns = columns?.replaceAll(",", "_");
-        console.log({searchColumns, query})
+        offset = 0;
         if (searchColumns) {
-            queryBuilder = queryBuilder.textSearch(searchColumns, query.toLowerCase());
+            queryBuilder = queryBuilder.textSearch(
+                searchColumns,
+                query.toLowerCase(),
+            );
         }
-    }  
+    }
 
     // Apply sorting if specified
     if (sortBy) {
+        console.log("sorting");
         const [column, order] = sortBy.split(".");
         queryBuilder = queryBuilder.order(column, {
             ascending: order === "asc",
         });
     }
 
-    queryBuilder = queryBuilder.range(offset, offset + pageSize - 1);
+    queryBuilder = queryBuilder.range(offset, offset + (pageSize - 1));
 
     const result = await queryBuilder;
+    console.log({ offset, pageIndex, pageSize, result: result.data?.length });
 
     return result;
 }

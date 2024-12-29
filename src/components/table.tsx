@@ -2,13 +2,11 @@
 
 import {
     ColumnDef,
-    ColumnFiltersState,
     flexRender,
     getCoreRowModel,
     getFilteredRowModel,
     getPaginationRowModel,
     getSortedRowModel,
-    SortingState,
     useReactTable,
 } from "@tanstack/react-table";
 
@@ -16,12 +14,11 @@ import {
     Table,
     TableBody,
     TableCell,
-    TableFooter,
     TableHead,
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { Input } from "./ui/input";
 import TablePagination from "./table-pagination";
 import { PAGE_INDEX, PAGE_SIZE } from "@/constants";
@@ -38,6 +35,7 @@ interface DataTableProps<TData, TValue> {
     rowCount?: number;
     title: string;
     description?: string;
+    headerActions?: ReactNode;
 }
 
 export function DataTable<TData, TValue>({
@@ -47,11 +45,12 @@ export function DataTable<TData, TValue>({
     setFilters,
     rowCount = 0,
     title,
-    description = ""
+    description = "",
+    headerActions = null,
 }: DataTableProps<TData, TValue>) {
     // const [sorting, setSorting] = useState<SortingState>([]);
     const [inputValue, setInputValue] = useState("");
-    const [rowSelection, setRowSelection] = useState({})
+    const [rowSelection, setRowSelection] = useState({});
     // const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(
     //     [],
     // );
@@ -72,7 +71,7 @@ export function DataTable<TData, TValue>({
         getSortedRowModel: getSortedRowModel(),
         // onColumnFiltersChange: setColumnFilters,
         getFilteredRowModel: getFilteredRowModel(),
-        manualFiltering: true,
+        manualFiltering: false,
         manualSorting: false,
         manualPagination: true,
         state: {
@@ -92,7 +91,7 @@ export function DataTable<TData, TValue>({
             );
         },
         pageCount: Math.ceil(
-            rowCount / paginationState?.pageSize,
+            paginationState.rowCount / paginationState?.pageSize,
         ) ?? 0,
     });
 
@@ -103,11 +102,15 @@ export function DataTable<TData, TValue>({
     return (
         <div className="rounded-md border p-4">
             <div className="mb-4">
-                <h1 className="text-lg font-semibold">{title || "Table heading"}</h1>
-                {description && <p className="text-sm text-foreground/50">{description}</p>}
+                <h1 className="text-lg font-semibold">
+                    {title || "Table heading"}
+                </h1>
+                {description && (
+                    <p className="text-sm text-foreground/50">{description}</p>
+                )}
             </div>
-            <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-3">
+            <div className="flex items-center justify-between mb-4 gap-4">
+                <div className="flex items-center gap-3 w-full">
                     <Input
                         placeholder="Filter title..."
                         value={inputValue}
@@ -116,13 +119,15 @@ export function DataTable<TData, TValue>({
                     />
                     <SearchBySelect />
                 </div>
-                <PageSizeSelect 
-                    value={filters?.pageSize?.toString() || PAGE_SIZE.toString()} 
+                {headerActions}
+                <PageSizeSelect
+                    value={filters?.pageSize?.toString() ||
+                        PAGE_SIZE.toString()}
                     onChange={(value) => {
                         setFilters({
                             ...filters,
-                            pageSize: Number(value)
-                        } as Filters<TData>)
+                            pageSize: Number(value),
+                        } as Filters<TData>);
                     }}
                 />
             </div>
