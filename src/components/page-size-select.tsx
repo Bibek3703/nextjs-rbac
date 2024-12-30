@@ -1,21 +1,20 @@
-import React from 'react'
+import React from "react";
 import {
   Select,
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { PAGE_SIZE } from '@/constants'
+} from "@/components/ui/select";
+import { PAGE_SIZE } from "@/constants";
 
 export default function PageSizeSelect({
   value = PAGE_SIZE.toString(),
-  onChange = () => {}
+  onChange = () => {},
 }: {
   value: string;
-  onChange: (value: string) => void
+  onChange: (value: string) => void;
 }) {
   return (
     <Select value={value} onValueChange={onChange}>
@@ -32,5 +31,5 @@ export default function PageSizeSelect({
         </SelectGroup>
       </SelectContent>
     </Select>
-  )
+  );
 }

@@ -12,13 +12,7 @@ import {
 import { Table } from "@tanstack/react-table";
 
 export default function TablePagination<TData>(
-    {
-        table,
-        data = [],
-    }: {
-        table: Table<TData>;
-        data: TData[];
-    },
+    { table }: { table: Table<TData> },
 ) {
     const getPages = () => {
         let pages = Array.from({

@@ -1,25 +1,23 @@
-import React from 'react'
+import React from "react";
 import {
   Select,
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
 
 export default function SearchBySelect({
-    onChange = () => {},
-    columns = []
-}:{
-    onChange?: (value: string) => void;
-    columns?: string[]
-}
-) {
-    if(columns.length <= 1){
-        return null
-    }
+  onChange = () => {},
+  columns = [],
+}: {
+  onChange?: (value: string) => void;
+  columns?: string[];
+}) {
+  if (columns.length <= 1) {
+    return null;
+  }
   return (
     <Select onValueChange={onChange}>
       <SelectTrigger className="w-auto gap-3">
@@ -35,5 +33,5 @@ export default function SearchBySelect({
         </SelectGroup>
       </SelectContent>
     </Select>
-  )
+  );
 }

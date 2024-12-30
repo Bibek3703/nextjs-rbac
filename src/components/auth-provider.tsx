@@ -12,6 +12,7 @@ import { jwtDecode, JwtPayload } from "jwt-decode";
 import {
     createContext,
     ReactNode,
+    useCallback,
     useContext,
     useEffect,
     useState,
@@ -34,11 +35,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const router = useRouter();
     const pathname = usePathname();
 
-    const handleOnAuthChange = (
+    const handleOnAuthChange = useCallback((
         event: AuthChangeEvent,
         session: Session | null,
     ) => {
-        let currentUser = session?.user as User & { appRole: string };
+        const currentUser = session?.user as User & { appRole: string };
         if (session && currentUser) {
             const jwt = jwtDecode(session.access_token) as JwtPayload & {
                 user_role: string;
@@ -69,7 +70,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         } else if (event === "USER_UPDATED") {
             // handle user updated event
         }
-    };
+    }, [pathname, router]);
 
     useEffect(() => {
         let subscription: Subscription;
@@ -90,7 +91,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 subscription.unsubscribe();
             }
         };
-    }, []);
+    }, [handleOnAuthChange]);
+
+    if (!userLoaded) return null;
 
     return (
         <AuthContext.Provider value={{ session, user }}>

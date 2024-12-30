@@ -13,7 +13,7 @@ export type Todo = {
   description: string;
   status: TodoStatus;
   visibility: Visibility;
-  created_at?: String;
+  created_at?: string;
   created_by?: string;
   updated_at?: string;
 };

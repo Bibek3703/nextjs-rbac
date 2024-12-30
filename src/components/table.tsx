@@ -7,6 +7,7 @@ import {
     getFilteredRowModel,
     getPaginationRowModel,
     getSortedRowModel,
+    PaginationState,
     useReactTable,
 } from "@tanstack/react-table";
 
@@ -26,6 +27,7 @@ import { Filters } from "@/types";
 import useDebounce from "@/hooks/use-debounce";
 import PageSizeSelect from "./page-size-select";
 import SearchBySelect from "./searchby-select";
+import { Updater } from "@tanstack/react-query";
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
@@ -50,7 +52,7 @@ export function DataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
     // const [sorting, setSorting] = useState<SortingState>([]);
     const [inputValue, setInputValue] = useState("");
-    const [rowSelection, setRowSelection] = useState({});
+    // const [rowSelection, setRowSelection] = useState({});
     // const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(
     //     [],
     // );
@@ -79,11 +81,11 @@ export function DataTable<TData, TValue>({
                 pageIndex: filters?.pageIndex || PAGE_INDEX,
                 pageSize: filters?.pageSize || PAGE_SIZE,
             },
-            rowSelection,
+            // rowSelection,
             // sorting,
             // columnFilters,
         },
-        onPaginationChange: (pagination: any) => {
+        onPaginationChange: (pagination: Updater<PaginationState, unknown>) => {
             setFilters(
                 typeof pagination === "function"
                     ? pagination(paginationState)
@@ -96,8 +98,11 @@ export function DataTable<TData, TValue>({
     });
 
     useEffect(() => {
-        setFilters({ ...filters, query: debouncedValue } as Filters<TData>);
-    }, [debouncedValue]);
+        setFilters({
+            ...filters,
+            query: debouncedValue,
+        } as Filters<TData>);
+    }, [debouncedValue, filters, setFilters]);
 
     return (
         <div className="rounded-md border p-4">
@@ -184,10 +189,7 @@ export function DataTable<TData, TValue>({
             </Table>
 
             <div className="mt-4">
-                <TablePagination
-                    table={table}
-                    data={data}
-                />
+                <TablePagination table={table} />
             </div>
         </div>
     );

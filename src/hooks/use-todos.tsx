@@ -9,23 +9,31 @@ import {
     useQuery,
     useQueryClient,
 } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
 export default function useTodos() {
     const queryClient = useQueryClient();
-    const [searchColumns, setSearchColumns] = useState(["title"]);
+    const [searchColumns, setSearchColumns] = useState<string[]>(["title"]);
 
     const [filters, setFilters] = useState<Filters<Todo>>({
         pageIndex: 0,
         pageSize: 5,
     });
 
+    const columns = useMemo(() => {
+        return searchColumns.join(",");
+    }, [searchColumns]);
+
+    useEffect(() => {
+        setSearchColumns(["title"]);
+    }, [setSearchColumns]);
+
     // Query function to fetch todos
     const todosFetchFn = async (filters: Filters<Todo>) => {
         const searchQueries = createSearchParams({
             ...filters,
-            columns: searchColumns.join(","),
+            columns: columns,
         });
         const response = await fetch(`/api/todos?${searchQueries}`, {
             method: "GET",

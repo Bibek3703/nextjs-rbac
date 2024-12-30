@@ -6,10 +6,7 @@ import {
     Command,
     GalleryVerticalEnd,
     Home,
-    Map,
     Notebook,
-    Settings2,
-    Users,
 } from "lucide-react";
 
 import {
@@ -56,35 +53,35 @@ const data = {
             icon: Notebook,
             roles: ["admin", "moderator"],
         },
-        {
-            title: "Users",
-            url: "/admin/users",
-            icon: Users,
-            roles: ["admin"],
-        },
-        {
-            title: "Settings",
-            url: "#",
-            icon: Settings2,
-            items: [
-                {
-                    title: "General",
-                    url: "/admin/settings",
-                },
-                // {
-                //     title: "Team",
-                //     url: "#",
-                // },
-                // {
-                //     title: "Billing",
-                //     url: "#",
-                // },
-                // {
-                //     title: "Limits",
-                //     url: "#",
-                // },
-            ],
-        },
+        // {
+        //     title: "Users",
+        //     url: "/admin/users",
+        //     icon: Users,
+        //     roles: ["admin"],
+        // },
+        // {
+        //     title: "Settings",
+        //     url: "#",
+        //     icon: Settings2,
+        //     items: [
+        //         {
+        //             title: "General",
+        //             url: "/admin/settings",
+        //         },
+        //         {
+        //             title: "Team",
+        //             url: "#",
+        //         },
+        //         {
+        //             title: "Billing",
+        //             url: "#",
+        //         },
+        //         {
+        //             title: "Limits",
+        //             url: "#",
+        //         },
+        //     ],
+        // },
     ],
     // projects: [
     //     {

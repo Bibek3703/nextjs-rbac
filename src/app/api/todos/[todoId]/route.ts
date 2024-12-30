@@ -3,8 +3,8 @@ import deleteTodo from "../_actions/deleteTodo";
 import updateTodo from "../_actions/updateTodo";
 
 export async function DELETE(
-    request: NextRequest,
-    { params }: { params: { todoId: string } },
+    _request: NextRequest,
+    { params }: { params: Promise<{ todoId: string }> },
 ) {
     try {
         const { todoId } = await params;
@@ -19,9 +19,12 @@ export async function DELETE(
 
         return NextResponse.json(data, { status, statusText });
     } catch (error: unknown) {
-        // Handle unknown errors
         return NextResponse.json(
-            { error: "Internal Server Error" },
+            {
+                error: error instanceof Error
+                    ? error.message
+                    : "Internal Server Error",
+            },
             { status: 500 },
         );
     }
@@ -29,7 +32,7 @@ export async function DELETE(
 
 export async function PATCH(
     request: NextRequest,
-    { params }: { params: { todoId: string } },
+    { params }: { params: Promise<{ todoId: string }> },
 ) {
     try {
         const { todoId } = await params;
@@ -59,7 +62,11 @@ export async function PATCH(
     } catch (error: unknown) {
         // Handle unknown errors
         return NextResponse.json(
-            { error: "Internal Server Error" },
+            {
+                error: error instanceof Error
+                    ? error?.message
+                    : "Internal Server Error",
+            },
             { status: 500 },
         );
     }

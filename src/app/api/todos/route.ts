@@ -34,7 +34,11 @@ export async function GET(request: NextRequest) {
     } catch (error: unknown) {
         // Handle unknown errors
         return NextResponse.json(
-            { error: "Internal Server Error" },
+            {
+                error: error instanceof Error
+                    ? error?.message
+                    : "Internal Server Error",
+            },
             { status: 500 },
         );
     }
@@ -61,7 +65,11 @@ export async function POST(request: NextRequest) {
     } catch (error: unknown) {
         // Handle unknown errors
         return NextResponse.json(
-            { error: "Internal Server Error" },
+            {
+                error: error instanceof Error
+                    ? error?.message
+                    : "Internal Server Error",
+            },
             { status: 500 },
         );
     }

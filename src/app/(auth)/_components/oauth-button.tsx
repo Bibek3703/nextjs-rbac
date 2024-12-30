@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import React, { useState } from "react";
 import { signinWithOAuth } from "../_actions/signinWithOAuth";
 import { ProviderType } from "@/types";
+import { Loader2 } from "lucide-react";
 
 function ProviderIcon({ provider }: { provider: ProviderType }) {
     switch (provider) {
@@ -29,8 +30,9 @@ export default function OAuthButton(
             await signinWithOAuth({
                 provider,
             });
-        } catch (error: any) {
-            alert(error?.message);
+        } catch (error: unknown) {
+            // alert(error?.message);
+            console.log({ error });
         } finally {
             setLoading(false);
         }
@@ -41,9 +43,11 @@ export default function OAuthButton(
             variant="outline"
             className="w-full capitalize"
             onClick={handleOAuthSignIn}
-            disabled={disabled}
+            disabled={disabled || loading}
         >
-            <ProviderIcon provider={provider} />
+            {loading
+                ? <Loader2 className="animate-spin w-6 h-6" />
+                : <ProviderIcon provider={provider} />}
             Login with {provider}
         </Button>
     );

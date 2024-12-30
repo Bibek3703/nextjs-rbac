@@ -20,7 +20,7 @@ export function createSearchParams<T>(params: Filters<T>): URLSearchParams {
 
 // Simple conversion
 export function searchParamsToObject(searchParams: URLSearchParams) {
-    const params: Record<string, any> = {};
+    const params: Record<string, unknown> = {};
 
     searchParams.forEach((value, key) => {
         params[key] = value;
