@@ -44,8 +44,6 @@ export async function updateSession(request: NextRequest) {
         data: { session },
     } = await supabase.auth.getSession();
 
-    console.log({ session });
-
     let role = "";
 
     if (session?.access_token) {

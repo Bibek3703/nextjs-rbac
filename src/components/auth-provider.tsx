@@ -29,7 +29,6 @@ const AuthContext = createContext<AuthContext>({
 });
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-    const [userLoaded, setUserLoaded] = useState(false);
     const [session, setSession] = useState<Session | null>(null);
     const [user, setUser] = useState<User & { appRole: string } | null>(null);
     const router = useRouter();
@@ -49,7 +48,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             }
         }
         setUser(currentUser ?? null);
-        setUserLoaded(!!currentUser);
         setSession(session);
         if (event === "INITIAL_SESSION") {
             // handle initial session
@@ -92,8 +90,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             }
         };
     }, [handleOnAuthChange]);
-
-    if (!userLoaded) return null;
 
     return (
         <AuthContext.Provider value={{ session, user }}>
