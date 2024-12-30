@@ -25,9 +25,9 @@ import { useAuth } from "@/components/auth-provider";
 const data = {
     teams: [
         {
-            name: "Acme Inc",
+            name: "Todo App",
             logo: GalleryVerticalEnd,
-            plan: "Enterprise",
+            plan: "Basic",
         },
         {
             name: "Acme Corp.",
