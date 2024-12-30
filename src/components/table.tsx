@@ -102,7 +102,7 @@ export function DataTable<TData, TValue>({
             ...filters,
             query: debouncedValue,
         } as Filters<TData>);
-    }, [debouncedValue, filters, setFilters]);
+    }, [debouncedValue]);
 
     return (
         <div className="rounded-md border p-4">
