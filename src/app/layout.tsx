@@ -16,25 +16,23 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <>
-      <AuthProvider>
-        <html lang="en" suppressHydrationWarning>
-          <head />
-          <body className="min-h-full">
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="system"
-              enableSystem
-              disableTransitionOnChange
-            >
-              <QueryProvider>
-                {children}
-                <Toaster richColors />
-              </QueryProvider>
-            </ThemeProvider>
-          </body>
-        </html>
-      </AuthProvider>
-    </>
+    <html lang="en" suppressHydrationWarning>
+      <head />
+      <body className="min-h-full">
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <QueryProvider>
+            <AuthProvider>
+              {children}
+              <Toaster richColors />
+            </AuthProvider>
+          </QueryProvider>
+        </ThemeProvider>
+      </body>
+    </html>
   );
 }

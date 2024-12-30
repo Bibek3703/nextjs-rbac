@@ -1,7 +1,7 @@
 -- Custom types
--- create type public.app_permission as enum ('todos.read', 'todos.update', 'todos.delete');
--- create type public.app_role as enum ('admin', 'moderator');
--- create type public.user_status as enum ('ONLINE', 'OFFLINE');
+create type public.app_permission as enum ('todos.read', 'todos.update', 'todos.delete');
+create type public.app_role as enum ('admin', 'moderator');
+create type public.user_status as enum ('ONLINE', 'OFFLINE');
 create type public.visibility as enum('public', 'private');
 
 create type public.todo_status as enum('PROGRESS', 'COMPLETED', 'CANCELLED');
@@ -140,6 +140,7 @@ begin
   values (
       new.id,
       COALESCE(new.raw_user_meta_data->>'username', new.raw_user_meta_data->>'email'),
+      new.raw_user_meta_data->>'email',
       new.raw_user_meta_data->>'full_name',
       new.raw_user_meta_data->>'avatar_url',
       is_admin
@@ -235,9 +236,8 @@ from
   anon,
   public;
 
-create policy "Allow auth admin to read user roles" ON public.user_roles as permissive for
-select
-  to supabase_auth_admin using (true)
+create policy "Allow auth admin to read user roles" 
+ON public.user_roles as permissive for select to supabase_auth_admin using (true);
 
 
 /**
