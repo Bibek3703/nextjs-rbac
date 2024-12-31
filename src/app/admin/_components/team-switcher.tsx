@@ -13,7 +13,7 @@ export function TeamSwitcher({
     teams: {
         name: string;
         logo: React.ElementType;
-        plan: string;
+        role: string;
     }[];
 }) {
     // const { isMobile } = useSidebar();
@@ -37,8 +37,8 @@ export function TeamSwitcher({
                         <span className="truncate font-semibold">
                             {activeTeam?.name || ""}
                         </span>
-                        <span className="truncate text-xs">
-                            {activeTeam?.plan || ""}
+                        <span className="truncate text-xs capitalize">
+                            {activeTeam?.role || ""}
                         </span>
                     </div>
                     {/* <ChevronsUpDown className="ml-auto" /> */}

@@ -110,7 +110,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     return (
         <Sidebar collapsible="icon" {...props}>
             <SidebarHeader>
-                <TeamSwitcher teams={data.teams} />
+                <TeamSwitcher
+                    teams={[{
+                        name: "Todo App",
+                        logo: GalleryVerticalEnd,
+                        role: user.appRole,
+                    }]}
+                />
             </SidebarHeader>
             <SidebarContent>
                 <NavMain items={data.navMain as NavItem[]} />
