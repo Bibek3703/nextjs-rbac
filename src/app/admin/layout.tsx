@@ -8,10 +8,23 @@ export const metadata: Metadata = {
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import AppTopBar from "./_components/app-topbar";
 import { AppSidebar } from "./_components/app-sidebar";
+import {
+    getUserAppRole,
+    getUserSession,
+} from "../(auth)/_actions/getCurrentUser";
 
-export default function AdminLayout({ children }: { children: ReactNode }) {
+export default async function AdminLayout(
+    { children }: { children: ReactNode },
+) {
+    const { data: { session } } = await getUserSession();
+
+    const role = getUserAppRole(session?.access_token);
+
     return (
         <SidebarProvider>
+            <head>
+                <title>{role ?? "Dashboard"}</title>
+            </head>
             <AppSidebar />
             <SidebarInset>
                 <AppTopBar />
