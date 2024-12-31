@@ -7,13 +7,14 @@ export async function getUserSession() {
     return await supabase.auth.getSession();
 }
 
-export async function getUserAppRole(token: string | undefined) {
+export function getUserAppRole(token: string | undefined) {
     if (!token) return null;
     const jwt = jwtDecode(token) as JwtPayload & {
         user_role: string;
     };
     if (jwt?.user_role) {
-        return capitalize(jwt.user_role);
+        const role = capitalize(jwt.user_role);
+        return role;
     }
     return null;
 }
